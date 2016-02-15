@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Feb 14, 2016 3:07:37 AM
+
+     project    build-ant-exec-jar
+     description demo on building a simple executable JAR with ant.
+
+     Rokagee
+     ====================================================================== -->
+<project name="project" default="dist" basedir=".">
+	<description>
+            Build simple executable JAR with ant.
+    </description>
+
+	<property name="file.name.jar" value="exec.jar" />
+	<property name="jar.classpath" value="lib/commons-lang3-3.4.jar" />
+
+	<!-- ================================= 
+          target: clean              
+         ================================= -->
+	<target name="clean" description="clean workspace and delete project artifacts.">
+		<delete dir="target" />
+		<delete dir="bin" />
+		<delete file="${file.name.jar}" />
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: create-dirs                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="create-dirs">
+		<mkdir dir="target" />
+	</target>
+
+
+	<!-- ================================= 
+          target: compile              
+         ================================= -->
+	<target name="compile" depends="create-dirs" description="compile sources">
+		<javac srcdir="src" destdir="target" debug="on" includeantruntime="true">
+			<classpath>
+				<fileset dir="lib" id="lib.id">
+					<include name="commons-lang3-3.4.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- ================================= 
+          target: dist              
+         ================================= -->
+	<target name="dist" depends="compile" description="build dist jar excutable">
+		<jar destfile="${file.name.jar}">
+			<manifest>
+				<attribute name="Main-Class" value="de.binosis.edu.exe.jar.App" />
+				<attribute name="Class-Path" value="${jar.classpath}" />
+			</manifest>
+			<fileset dir="target" includes="**/*.class" />
+		</jar>
+	</target>
+
+	<!-- ================================= 
+          target: run-jar              
+         ================================= -->
+	<target name="run-jar" depends="dist" description="execute the executable JAR file.">
+		<java jar="${file.name.jar}" fork="true">
+			<arg value="jar"/>
+		</java>
+	</target>
+
+
+</project>
